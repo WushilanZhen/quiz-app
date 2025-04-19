@@ -1,6 +1,6 @@
 
 (function(){
-  let current = 0, score=0;
+  let current = 0, score = 0;
   const app = document.getElementById('app');
 
   function render() {
@@ -14,18 +14,29 @@
       html += `<button id="btn${i}">${c}</button>`;
     });
     app.innerHTML = html;
+
+    let answered = false;
     q.choices.forEach((_,i)=>{
       document.getElementById(`btn${i}`).addEventListener('click', ()=>{
-        if (i===q.answer) {
+        if (answered) return;
+        answered = true;
+
+        const message = document.createElement('p');
+        if (i === q.answer) {
           score++;
           document.getElementById(`btn${i}`).classList.add('correct');
+          message.textContent = "🎯 正解です！";
         } else {
           document.getElementById(`btn${i}`).classList.add('wrong');
           document.getElementById(`btn${q.answer}`).classList.add('correct');
+          message.textContent = `❌ 不正解です！正解は「${q.choices[q.answer]}」です。`;
         }
+        app.appendChild(message);
+
         const expl = document.createElement('p');
-        expl.textContent = `解説: ${q.explanation}`;
+        expl.textContent = `解説：${q.explanation}`;
         app.appendChild(expl);
+
         const next = document.createElement('button');
         next.textContent = '次の問題へ';
         next.addEventListener('click', ()=>{
